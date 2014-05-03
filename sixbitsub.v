@@ -11,7 +11,7 @@ module sixbitsub (ain, bin, diff, overflow);
 
 	wire[5:0] notb = ~bin + 1;
 
-	sixbitadd ad1 (ain, notb, diff, overflow);
+	sixbitadd ad1 (ain, notb, 0, diff, overflow);
 endmodule
 
 `endif

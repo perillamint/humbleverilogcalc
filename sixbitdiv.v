@@ -31,37 +31,28 @@ module sixbitdiv (dividend, divisor, quotient, remainder, err);
 	wire[5:0] overflow;
 	wire divzero;
 	
-	
-	assign divzero = !(divisor[0] || divisor[1] || divisor[2] || divisor[3] ||
-	                 divisor[4] || divisor[5]);
-	
+	nor (divzero, divisor[5], divisor[4], divisor[3], divisor[2], divisor[1], divisor[0]);
 	
 	assign posdividend = dividend[5] ? ~(dividend - 1) : dividend;
     assign posdivisor = divisor[5] ? ~(divisor - 1) : divisor;
 
-    /*
-    sixbitsub sb1 (posdividend, (posdivisor << 5) & 'h0x1F , sub1, overflow[0]); 
-    assign posquotient[5] = !(sub1[5] || overflow[0]);
-    assign div1 = posquotient[5] ? sub1 : posdividend;
-    */
-    
     assign div1 = posdividend;
     assign posquotient[5] = 0;
     
     sixbitsub sb2 (div1, (posdivisor << 4) & 'h1F, sub2, overflow[1]);
-    nor (posquotient[4], sub2[5], overflow[1], posdivisor[1], posdivisor[2], posdivisor[3], posdivisor[4], posdivisor[5]);
+    nor (posquotient[4], sub2[5], overflow[1], posdivisor[5], posdivisor[4], posdivisor[3], posdivisor[2], posdivisor[1]);
     assign div2 = posquotient[4] ? sub2 : div1;
     
     sixbitsub sb3 (div2, (posdivisor << 3) & 'h1F, sub3, overflow[2]);
-    nor (posquotient[3], sub3[5], overflow[2], posdivisor[2], posdivisor[3], posdivisor[4], posdivisor[5]);
+    nor (posquotient[3], sub3[5], overflow[2], posdivisor[5], posdivisor[4], posdivisor[3], posdivisor[2]);
     assign div3 = posquotient[3] ? sub3 : div2;
     
     sixbitsub sb4 (div3, (posdivisor << 2) & 'h1F, sub4, overflow[3]);
-    nor (posquotient[2], sub4[5], overflow[3], posdivisor[3], posdivisor[4], posdivisor[5]);
+    nor (posquotient[2], sub4[5], overflow[3], posdivisor[5], posdivisor[4], posdivisor[3]);
     assign div4 = posquotient[2] ? sub4 : div3;
     
     sixbitsub sb5 (div4, (posdivisor << 1) & 'h1F, sub5, overflow[4]);
-    nor (posquotient[1], sub5[5], overflow[4], posdivisor[4], posdivisor[5]);
+    nor (posquotient[1], sub5[5], overflow[4], posdivisor[5], posdivisor[4]);
     assign div5 = posquotient[1] ? sub5 : div4;
     
     sixbitsub sb6 (div5, (posdivisor) & 'h1F, sub6, overflow[5]);
