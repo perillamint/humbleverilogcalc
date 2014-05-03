@@ -38,6 +38,7 @@ module sixbitdiv (dividend, divisor, quotient, remainder, err);
 
     assign div1 = posdividend;
     assign posquotient[5] = 0;
+    assign overflow[0] = 0;
     
     sixbitsub sb2 (div1, (posdivisor << 4) & 'h1F, sub2, overflow[1]);
     nor (posquotient[4], sub2[5], overflow[1], posdivisor[5], posdivisor[4], posdivisor[3], posdivisor[2], posdivisor[1]);
@@ -59,8 +60,7 @@ module sixbitdiv (dividend, divisor, quotient, remainder, err);
     nor (posquotient[0], sub6[5], overflow[5], posdivisor[5]);
     assign posremainder = posquotient[0] ? sub6 : div5;
     
-    assign err = overflow[0] || overflow[1] || overflow[2] || overflow[3] ||
-                 overflow[4] || overflow[5] || divzero;
+    assign err = |overflow || divzero;
                  
     assign quotient = (dividend[5] ^ divisor[5]) ? ~posquotient + 1 : posquotient;
     assign remainder = dividend[5] ? ~posremainder + 1 : posremainder;

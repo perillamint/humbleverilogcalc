@@ -9,7 +9,7 @@ module testbench;
 
 	integer i, j;
 
-	sixbitadd ad1 (ain, bin, 0, sum, cout);
+	sixbitadd ad1 (ain, bin, sum, cout);
 
 	initial begin
 
